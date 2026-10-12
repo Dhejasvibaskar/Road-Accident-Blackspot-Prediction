@@ -1,0 +1,24 @@
+
+# Python temporary files
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Large collision datasets
+Data/*.csv
+
+# Generated analysis files
+Results/
+
+# Local editor settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Environment variables and credentials
+.env
+.env.*

@@ -1,0 +1,592 @@
+
+/* =========================================
+   ROAD COLLISION BLACKSPOT EXPLORER
+   Main Website Stylesheet
+   ========================================= */
+
+:root {
+    --navy: #17283d;
+    --blue: #245fad;
+    --blue-hover: #19477f;
+
+    --background: #f5f7f9;
+    --surface: #ffffff;
+    --text: #243447;
+    --muted: #5d6a78;
+    --border: #d9e0e7;
+
+    --very-high: #8b2424;
+    --medium: #d34739;
+    --detected: #e58a24;
+    --route: #245fc5;
+
+    --content-width: 1160px;
+}
+
+/* =========================================
+   BASE STYLES
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: auto;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family:
+        "Segoe UI",
+        Arial,
+        Helvetica,
+        sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.container {
+    width: min(100% - 48px, var(--content-width));
+    margin-inline: auto;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--navy);
+    line-height: 1.25;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.035em;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.65rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+}
+
+h3 {
+    font-size: 1.15rem;
+    margin-bottom: 24px;
+}
+
+p {
+    margin-bottom: 16px;
+}
+
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 3px;
+}
+
+/* =========================================
+   HEADER AND NAVIGATION
+   ========================================= */
+
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.header-content {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--navy);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.site-brand:hover {
+    text-decoration: none;
+}
+
+.brand-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    background: var(--navy);
+    color: #ffffff;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.main-nav a {
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.main-nav a:hover {
+    color: var(--blue);
+}
+
+/* =========================================
+   INTRODUCTION
+   ========================================= */
+
+.introduction {
+    padding: 66px 0 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+    margin-bottom: 14px;
+    color: var(--blue);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+}
+
+.intro-description {
+    max-width: 770px;
+    color: var(--muted);
+    font-size: 1.08rem;
+    line-height: 1.8;
+    margin-bottom: 0;
+}
+
+/* =========================================
+   SECTION HEADINGS
+   ========================================= */
+
+.planner-section {
+    padding: 58px 0 34px;
+}
+
+.section-heading {
+    margin-bottom: 28px;
+}
+
+.section-heading p {
+    max-width: 760px;
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+/* =========================================
+   ROUTE PLANNER LAYOUT
+   ========================================= */
+
+.planner-layout {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.search-panel,
+.statistics-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px;
+}
+
+/* =========================================
+   SEARCH FORM
+   ========================================= */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--navy);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    display: block;
+    width: 100%;
+    min-height: 47px;
+    padding: 11px 13px;
+
+    border: 1px solid #acb8c5;
+    border-radius: 3px;
+
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.95rem;
+}
+
+.form-group input:hover {
+    border-color: #768aa0;
+}
+
+.form-group input:focus {
+    border-color: var(--blue);
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+
+.form-group input::placeholder {
+    color: #718093;
+}
+
+.search-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 18px;
+
+    border: 1px solid var(--blue);
+    border-radius: 3px;
+
+    background: var(--blue);
+    color: #ffffff;
+
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background: var(--blue-hover);
+    border-color: var(--blue-hover);
+}
+
+.search-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.search-status {
+    min-height: 24px;
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   ROUTE STATISTICS
+   ========================================= */
+
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+}
+
+.stat-item {
+    min-height: 113px;
+    padding: 19px;
+
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.stat-item strong {
+    color: var(--navy);
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.statistics-note {
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.7;
+}
+
+/* =========================================
+   INTERACTIVE MAP
+   ========================================= */
+
+.map-section {
+    padding: 30px 0 65px;
+}
+
+.interactive-map {
+    width: 100%;
+    height: 560px;
+    background: #e5e9ed;
+    border: 1px solid var(--border);
+    z-index: 0;
+}
+
+/* =========================================
+   MAP LEGEND
+   ========================================= */
+
+.map-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+
+    padding: 18px 20px;
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-top: none;
+}
+
+.legend-title {
+    margin-right: 10px;
+    color: var(--navy);
+    font-size: 0.87rem;
+    font-weight: 700;
+}
+
+.legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text);
+    font-size: 0.84rem;
+}
+
+.legend-colour {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border: 1px solid rgb(0 0 0 / 15%);
+}
+
+.legend-colour.very-high {
+    background: var(--very-high);
+}
+
+.legend-colour.medium {
+    background: var(--medium);
+}
+
+.legend-colour.detected {
+    background: var(--detected);
+}
+
+.legend-colour.route {
+    background: var(--route);
+}
+
+/* =========================================
+   METHODOLOGY AND ABOUT
+   ========================================= */
+
+.information-section {
+    padding: 60px 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+.information-section .container {
+    max-width: 1160px;
+}
+
+.information-section p {
+    max-width: 850px;
+    color: var(--muted);
+    line-height: 1.85;
+}
+
+.about-section {
+    background: var(--background);
+}
+
+.disclaimer {
+    padding: 18px 20px;
+    border-left: 3px solid var(--blue);
+    background: #edf2f7;
+    font-size: 0.91rem;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.site-footer {
+    padding: 30px 0;
+    background: var(--navy);
+    color: #ffffff;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.footer-content p {
+    margin: 0;
+    color: #e5ebf2;
+    font-size: 0.84rem;
+}
+
+.footer-content nav {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.footer-content a {
+    color: #ffffff;
+    font-size: 0.84rem;
+}
+
+.site-footer a:focus-visible {
+    outline-color: #ffffff;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .planner-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .interactive-map {
+        height: 480px;
+    }
+
+}
+
+@media (max-width: 640px) {
+
+    .container {
+        width: min(100% - 32px, var(--content-width));
+    }
+
+    .header-content {
+        padding: 18px 0;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .main-nav {
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+
+    .main-nav a {
+        font-size: 0.84rem;
+    }
+
+    .introduction {
+        padding: 43px 0 38px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .intro-description {
+        font-size: 0.98rem;
+    }
+
+    .planner-section {
+        padding-top: 38px;
+    }
+
+    .search-panel,
+    .statistics-panel {
+        padding: 20px;
+    }
+
+    .stat-item {
+        min-height: 105px;
+        padding: 14px;
+    }
+
+    .stat-item strong {
+        font-size: 1.35rem;
+    }
+
+    .interactive-map {
+        height: 420px;
+    }
+
+    .map-section {
+        padding-bottom: 42px;
+    }
+
+    .map-legend {
+        padding: 16px;
+        gap: 12px 20px;
+    }
+
+    .legend-title {
+        width: 100%;
+    }
+
+    .information-section {
+        padding: 42px 0;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}

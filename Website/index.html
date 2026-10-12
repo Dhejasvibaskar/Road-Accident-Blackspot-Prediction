@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UK Road Collision Blackspot Explorer</title>
+
+    <meta
+        name="description"
+        content="Explore UK driving routes and examine historical road collision blackspots using 2021–2025 collision data."
+    >
+
+    <!-- Favicon will be created in a later step -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <!-- Leaflet map stylesheet -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Our website stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet mapping library -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        defer
+    ></script>
+
+    <!-- Our website functionality -->
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+
+    <!-- SITE HEADER -->
+    <header class="site-header">
+        <div class="container header-content">
+
+            <a href="index.html" class="site-brand">
+                <span class="brand-mark" aria-hidden="true">RC</span>
+                <span>Road Collision Explorer</span>
+            </a>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="#route-planner">Route Planner</a>
+                <a href="#methodology">Methodology</a>
+                <a href="#about">About</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <!-- INTRODUCTION -->
+        <section class="introduction">
+            <div class="container">
+
+                <p class="section-label">
+                    UK ROAD SAFETY DATA | 2021–2025
+                </p>
+
+                <h1>Road Collision Blackspot Explorer</h1>
+
+                <p class="intro-description">
+                    Search for a driving route in Great Britain and
+                    examine historical road collision blackspots
+                    located within approximately 100 metres of
+                    the route.
+                </p>
+
+            </div>
+        </section>
+
+
+        <!-- ROUTE PLANNER -->
+        <section
+            id="route-planner"
+            class="planner-section"
+            aria-labelledby="planner-heading"
+        >
+            <div class="container">
+
+                <div class="section-heading">
+                    <h2 id="planner-heading">Route Planner</h2>
+
+                    <p>
+                        Enter a starting point and destination
+                        to examine collision history along a
+                        driving route.
+                    </p>
+                </div>
+
+
+                <div class="planner-layout">
+
+                    <!-- SEARCH PANEL -->
+                    <div class="search-panel">
+
+                        <h3>Search locations</h3>
+
+                        <div class="form-group">
+                            <label for="start">
+                                Starting location
+                            </label>
+
+                            <input
+                                type="text"
+                                id="start"
+                                name="start"
+                                value="King's Cross Station, London"
+                                placeholder="Enter starting location"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="end">
+                                Destination
+                            </label>
+
+                            <input
+                                type="text"
+                                id="end"
+                                name="end"
+                                value="Waterloo Station, London"
+                                placeholder="Enter destination"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+
+                        <button
+                            type="button"
+                            id="searchBtn"
+                            class="search-button"
+                        >
+                            Find Route and Blackspots
+                        </button>
+
+                        <p
+                            id="status"
+                            class="search-status"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            Enter two locations to begin.
+                        </p>
+
+                    </div>
+
+
+                    <!-- ROUTE STATISTICS -->
+                    <div class="statistics-panel">
+
+                        <h3>Route Analysis</h3>
+
+                        <div class="statistics-grid">
+
+                            <div class="stat-item">
+                                <span class="stat-label">
+                                    Driving distance
+                                </span>
+                                <strong id="distance">--</strong>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">
+                                    Nearby blackspots
+                                </span>
+                                <strong id="total">--</strong>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">
+                                    Very high risk category
+                                </span>
+                                <strong id="veryHigh">--</strong>
+                            </div>
+
+                            <div class="stat-item">
+                                <span class="stat-label">
+                                    Medium risk category
+                                </span>
+                                <strong id="medium">--</strong>
+                            </div>
+
+                        </div>
+
+                        <p class="statistics-note">
+                            Figures are calculated from the
+                            selected route and historical
+                            blackspot dataset.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- MAP SECTION -->
+        <section
+            class="map-section"
+            aria-labelledby="map-heading"
+        >
+            <div class="container">
+
+                <div class="section-heading">
+                    <h2 id="map-heading">Interactive Route Map</h2>
+
+                    <p>
+                        The route and nearby historical
+                        collision blackspots will appear below.
+                    </p>
+                </div>
+
+                <div
+                    id="map"
+                    class="interactive-map"
+                    role="region"
+                    aria-label="Interactive driving route and historical collision blackspot map"
+                ></div>
+
+
+                <!-- MAP LEGEND -->
+                <div class="map-legend" aria-label="Map legend">
+
+                    <span class="legend-title">
+                        Map legend
+                    </span>
+
+                    <span class="legend-item">
+                        <span class="legend-colour very-high"></span>
+                        Very High
+                    </span>
+
+                    <span class="legend-item">
+                        <span class="legend-colour medium"></span>
+                        Medium
+                    </span>
+
+                    <span class="legend-item">
+                        <span class="legend-colour detected"></span>
+                        Detected
+                    </span>
+
+                    <span class="legend-item">
+                        <span class="legend-colour route"></span>
+                        Driving Route
+                    </span>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- METHODOLOGY -->
+        <section
+            id="methodology"
+            class="information-section"
+            aria-labelledby="methodology-heading"
+        >
+            <div class="container">
+
+                <h2 id="methodology-heading">
+                    Data and Methodology
+                </h2>
+
+                <p>
+                    This project uses UK Department for Transport
+                    road collision records from 2021 to 2025.
+                    Historical blackspots are identified by
+                    grouping nearby collision coordinates and
+                    calculating severity-weighted scores.
+                </p>
+
+                <p>
+                    For route visualization, the application
+                    identifies recorded blackspots located
+                    within approximately 100 metres of the
+                    calculated driving route.
+                </p>
+
+                <p>
+                    Risk categories are project-defined
+                    classifications of historical collision
+                    concentration and severity. They are
+                    not official road safety ratings.
+                </p>
+
+            </div>
+        </section>
+
+
+        <!-- ABOUT -->
+        <section
+            id="about"
+            class="information-section about-section"
+            aria-labelledby="about-heading"
+        >
+            <div class="container">
+
+                <h2 id="about-heading">About This Project</h2>
+
+                <p>
+                    Road Accident Blackspot Prediction and
+                    Route-Based Visualization Using Interactive
+                    Maps is a Principles of Data Science project
+                    investigating historical road collision
+                    patterns and their relationship to
+                    selected driving routes.
+                </p>
+
+                <p class="disclaimer">
+                    This tool is for educational and research
+                    purposes. Historical collision patterns do
+                    not guarantee future accident locations.
+                    Always follow official road signs, traffic
+                    regulations and current road conditions.
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+
+        <div class="container footer-content">
+
+            <p>
+                Road Collision Explorer
+                | Principles of Data Science Project
+            </p>
+
+            <nav aria-label="Legal information">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms and Conditions</a>
+            </nav>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>
