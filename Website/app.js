@@ -15,6 +15,7 @@
 
 const statusElement = document.getElementById("status");
 const searchButton = document.getElementById("searchBtn");
+const sampleButton = document.getElementById("sampleBtn");
 
 const startInput = document.getElementById("start");
 const endInput = document.getElementById("end");
@@ -58,6 +59,7 @@ let routeLayer = null;
 // ==================================================
 
 searchButton.disabled = true;
+sampleButton.disabled = true;
 
 async function loadBlackspots() {
 
@@ -100,6 +102,7 @@ async function loadBlackspots() {
             "historical blackspots loaded. Ready to search.";
 
         searchButton.disabled = false;
+        sampleButton.disabled = false;
 
     } catch (error) {
 
@@ -567,6 +570,50 @@ function resetStatistics() {
 // 11. MAIN ROUTE SEARCH FUNCTION
 // ==================================================
 
+// ==================================================
+// SAMPLE ROUTE: OFFLINE DEMO OF ROUTE-BASED ANALYSIS
+// Uses a saved route generated in the project; no geocoding
+// or public route API is required for this demonstration.
+// ==================================================
+
+async function showSampleRoute() {
+    sampleButton.disabled = true;
+    searchButton.disabled = true;
+    statusElement.textContent = "Loading a saved London route...";
+
+    try {
+        const response = await fetch("sample_route.json");
+        if (!response.ok) throw new Error("Sample route could not be loaded.");
+        const sample = await response.json();
+        if (!Array.isArray(sample.points) || sample.points.length < 2 ||
+            !Number.isFinite(sample.distanceKm)) {
+            throw new Error("Sample route data is invalid.");
+        }
+        const route = {points: sample.points, distanceKm: sample.distanceKm};
+        const nearby = findNearbyBlackspots(route.points, 100);
+        if (routeLayer !== null) map.removeLayer(routeLayer);
+        markerLayer.clearLayers();
+        routeLayer = L.polyline(route.points, {
+            color: "#245fc5", weight: 5, opacity: 0.9
+        }).addTo(map);
+        L.marker(route.points[0]).bindPopup("Saved route start").addTo(markerLayer);
+        L.marker(route.points[route.points.length - 1])
+            .bindPopup("Saved route destination").addTo(markerLayer);
+        displayBlackspots(nearby);
+        map.fitBounds(routeLayer.getBounds(), {padding: [30, 30]});
+        updateStatistics(route, nearby);
+        statusElement.textContent = `Sample analysis loaded: ${nearby.length} historical blackspots within 100 metres of the saved route. Enter your own route to search live.`;
+    } catch (error) {
+        console.error("Sample route error:", error);
+        statusElement.textContent = "Unable to load sample route: " + error.message;
+    } finally {
+        sampleButton.disabled = false;
+        searchButton.disabled = false;
+    }
+}
+
+
+
 async function searchRoute() {
 
     const startingPlace = startInput.value.trim();
@@ -728,6 +775,8 @@ searchButton.addEventListener(
     "click",
     searchRoute
 );
+
+sampleButton.addEventListener("click", showSampleRoute);
 
 
 // ==================================================
