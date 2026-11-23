@@ -590,3 +590,20 @@ a:hover {
     }
 
 }
+
+/* Accessible secondary demo action */
+.sample-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 13px 16px;
+    background: #f1f5fb;
+    border: 1px solid #b8c6dc;
+    border-radius: 7px;
+    color: #183658;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+.sample-button:hover:not(:disabled) { background: #dfeaf9; }
+.sample-button:focus-visible { outline: 3px solid #245fc5; outline-offset: 2px; }
+.sample-button:disabled { cursor: wait; opacity: 0.65; }
