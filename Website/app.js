@@ -128,14 +128,23 @@ function delay(milliseconds) {
 
 async function getCoordinates(place) {
 
+    // Normalise user input so differences such as
+    // "Oxford", "oxford", or extra spaces give the same query.
+    const normalizedPlace = place
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase();
+
     const url = new URL(
         "https://nominatim.openstreetmap.org/search"
     );
 
-    url.searchParams.set("q", place);
-    url.searchParams.set("format", "json");
+    url.searchParams.set("q", normalizedPlace);
+    url.searchParams.set("format", "jsonv2");
     url.searchParams.set("countrycodes", "gb");
     url.searchParams.set("limit", "1");
+    url.searchParams.set("addressdetails", "1");
+    url.searchParams.set("accept-language", "en");
 
     const response = await fetch(url);
 
@@ -153,8 +162,10 @@ async function getCoordinates(place) {
         );
     }
 
-    const latitude = Number(results[0].lat);
-    const longitude = Number(results[0].lon);
+    const result = results[0];
+
+    const latitude = Number(result.lat);
+    const longitude = Number(result.lon);
 
     if (
         !Number.isFinite(latitude) ||
@@ -165,15 +176,22 @@ async function getCoordinates(place) {
         );
     }
 
+    // Helpful while testing
+    console.log(
+        `Entered "${place}" → matched:`,
+        result.display_name,
+        latitude,
+        longitude
+    );
+
     return [latitude, longitude];
 }
 
-
 // ==================================================
-// 5. CALCULATE DRIVING ROUTE USING OSRM
+// 5. CALCULATE ALTERNATIVE DRIVING ROUTES USING OSRM
 // ==================================================
 
-async function getDrivingRoute(start, end) {
+async function getDrivingRoutes(start, end) {
 
     const startLat = start[0];
     const startLon = start[1];
@@ -184,7 +202,7 @@ async function getDrivingRoute(start, end) {
     const url =
         "https://router.project-osrm.org/route/v1/driving/" +
         `${startLon},${startLat};${endLon},${endLat}` +
-        "?overview=full&geometries=geojson";
+        "?alternatives=true&overview=full&geometries=geojson";
 
     const response = await fetch(url);
 
@@ -206,31 +224,29 @@ async function getDrivingRoute(start, end) {
         );
     }
 
-    const selectedRoute = data.routes[0];
+    const routes = data.routes.map(
+        (route, index) => {
 
-    // OSRM returns [longitude, latitude].
-    // Leaflet requires [latitude, longitude].
-    const routePoints =
-        selectedRoute.geometry.coordinates.map(
-            coordinate => [
-                coordinate[1],
-                coordinate[0]
-            ]
-        );
+            const routePoints =
+                route.geometry.coordinates.map(
+                    coordinate => [
+                        coordinate[1],
+                        coordinate[0]
+                    ]
+                );
 
-    if (routePoints.length < 2) {
-        throw new Error(
-            "The routing service returned an invalid route."
-        );
-    }
+            return {
+                id: index + 1,
+                points: routePoints,
+                distanceKm: route.distance / 1000,
+                durationMinutes: route.duration / 60
+            };
+        }
+    );
 
-    const distanceKm = selectedRoute.distance / 1000;
-
-    return {
-        points: routePoints,
-        distanceKm: distanceKm
-    };
+    return routes;
 }
+
 
 
 // ==================================================
@@ -451,6 +467,36 @@ function findNearbyBlackspots(
     return nearby;
 }
 
+// ==================================================
+// 8. CALCULATE HISTORICAL ROUTE RISK SCORE
+// ==================================================
+
+function calculateRouteRisk(route, nearbyBlackspots) {
+
+    let totalSeverityScore = 0;
+
+    for (const spot of nearbyBlackspots) {
+
+        const severity =
+            Number(spot.total_severity_score);
+
+        if (Number.isFinite(severity)) {
+            totalSeverityScore += severity;
+        }
+    }
+
+    const safeDistance =
+        Math.max(route.distanceKm, 0.1);
+
+    const riskPerKm =
+        totalSeverityScore / safeDistance;
+
+    return {
+        totalSeverityScore: totalSeverityScore,
+        riskPerKm: riskPerKm
+    };
+}
+
 
 // ==================================================
 // 8. DISPLAY COLOURED BLACKSPOT MARKERS
@@ -649,22 +695,70 @@ async function searchRoute() {
             destinationPlace
         );
 
-        // Step 3: Calculate driving route
+        // Step 3: Calculate alternative driving routes
         statusElement.textContent =
-            "Calculating driving route...";
+            "Calculating alternative driving routes...";
 
-        const route = await getDrivingRoute(
+        const routes = await getDrivingRoutes(
             start,
             end
         );
 
-        // Step 4: Find nearby historical blackspots
+        // Step 4: Analyse historical risk for every route
         statusElement.textContent =
-            "Analysing historical collision blackspots...";
+            "Comparing route safety using historical blackspots...";
 
-        const nearby = findNearbyBlackspots(
-            route.points,
-            100
+        const analysedRoutes = routes.map(
+            route => {
+
+                const nearby =
+                    findNearbyBlackspots(
+                        route.points,
+                        100
+                    );
+
+                const risk =
+                    calculateRouteRisk(
+                        route,
+                        nearby
+                    );
+
+                return {
+                    ...route,
+                    nearby: nearby,
+                    totalSeverityScore:
+                        risk.totalSeverityScore,
+                    riskPerKm:
+                        risk.riskPerKm
+                };
+            }
+        );
+
+        // Select the route with the lowest historical risk per km
+        analysedRoutes.sort(
+            (a, b) => {
+
+                if (a.riskPerKm !== b.riskPerKm) {
+                    return a.riskPerKm - b.riskPerKm;
+                }
+
+                // If risk is equal, prefer shorter route
+                return a.distanceKm - b.distanceKm;
+            }
+        );
+
+        const route = analysedRoutes[0];
+
+        const nearby = route.nearby;
+
+        console.log(
+            "Routes compared:",
+            analysedRoutes
+        );
+
+        console.log(
+            "Recommended safer route:",
+            route
         );
 
         // Step 5: Remove previous map results
@@ -711,11 +805,19 @@ async function searchRoute() {
         updateStatistics(route, nearby);
 
         // Step 12: Display final status
-        statusElement.textContent =
-            "Route analysed successfully. " +
-            `${nearby.length} historical blackspots ` +
-            "found within approximately 100 metres.";
+        if (analysedRoutes.length > 1) {
 
+            statusElement.textContent =
+                `${analysedRoutes.length} routes compared. ` +
+                "Recommended the route with the lowest historical collision risk density. " +
+                `${nearby.length} blackspots found along the recommended route.`;
+
+        } else {
+
+            statusElement.textContent =
+                "Only one driving route was available for these locations. " +
+                `${nearby.length} historical blackspots were found along this route.`;
+        }
         console.log(
             "Driving distance:",
             route.distanceKm.toFixed(2),
