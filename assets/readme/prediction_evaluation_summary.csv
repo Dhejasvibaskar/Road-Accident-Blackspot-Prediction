@@ -1,0 +1,8 @@
+Metric,Value
+Training Records (2021-2024),412225.0
+Testing Records (2025),101523.0
+Predicted Blackspots,9639.0
+2025 Collisions Within 100m,18471.0
+Historical Blackspot Coverage (%),18.19
+Random Baseline Coverage (%),4.91
+Coverage Improvement (Percentage Points),13.28

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="330" viewBox="0 0 1200 330" role="img" aria-label="Road Accident Blackspot Prediction and Route-Based Visualization title banner">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0B172A"/><stop offset="1" stop-color="#1B3651"/></linearGradient>
+ <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#65E4DC"/><stop offset="1" stop-color="#80A9FF"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect width="1200" height="330" rx="24" fill="url(#bg)"/>
+<g opacity=".17" stroke="#80B8C8" fill="none">
+<path d="M650 -40L1030 340M780 -40L1160 340M570 80L1210 80M570 165L1210 165M570 250L1210 250"/>
+</g>
+<path d="M650 286 C725 255 725 182 810 198 S925 80 1000 125 S1110 236 1200 72" fill="none" stroke="#65E4DC" stroke-opacity=".25" stroke-width="15" filter="url(#glow)"/>
+<path d="M650 286 C725 255 725 182 810 198 S925 80 1000 125 S1110 236 1200 72" fill="none" stroke="url(#line)" stroke-width="6" stroke-linecap="round"/>
+<g stroke="#FFFFFF" stroke-width="4" fill="#E96B6B"><circle cx="815" cy="197" r="12"/><circle cx="1000" cy="125" r="12"/><circle cx="1137" cy="188" r="12"/></g>
+<circle cx="650" cy="286" r="10" fill="#FFFFFF" stroke="#65E4DC" stroke-width="4"/><circle cx="1195" cy="76" r="10" fill="#FFFFFF" stroke="#65E4DC" stroke-width="4"/>
+<rect x="55" y="48" width="142" height="28" rx="14" fill="#1F4D57"/>
+<text x="126" y="67" text-anchor="middle" font-size="12" font-family="Arial,sans-serif" fill="#8EF2EB" font-weight="700" letter-spacing="1.5">ROAD SAFETY</text>
+<text x="55" y="137" font-family="Arial,sans-serif" font-size="42" fill="#FFFFFF" font-weight="800">ROAD ACCIDENT</text>
+<text x="55" y="185" font-family="Arial,sans-serif" font-size="42" fill="#FFFFFF" font-weight="800">BLACKSPOT PREDICTION</text>
+<text x="55" y="226" font-family="Arial,sans-serif" font-size="21" fill="#A7DAD9">Historical risk analysis · Interactive route visualization</text>
+<text x="55" y="284" font-family="Arial,sans-serif" font-size="14" fill="#94ACC4" letter-spacing="1">UK ROAD COLLISION DATA  ·  2021—2025</text>
+</svg>
